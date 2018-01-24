@@ -433,8 +433,27 @@ namespace GLTF
 			{
 				var fieldToAccessor = primitive.Targets[blendShapeIndex];
 				var verts = fieldToAccessor["POSITION"].Value.AsVertexArray();
-				var normals = fieldToAccessor["NORMAL"].Value.AsNormalArray();
-				var tangents = fieldToAccessor["TANGENT"].Value.AsVector3Array();
+
+				Vector3[] normals;
+				if (fieldToAccessor.ContainsKey("NORMAL"))
+					normals = fieldToAccessor["NORMAL"].Value.AsNormalArray();
+				else {
+					normals = new Vector3[verts.Length];
+					for (int i = 0; i < verts.Length; i++)
+						normals[i] = new Vector3();
+				}
+
+				Vector3[] tangents;
+				if (fieldToAccessor.ContainsKey("TANGENT"))
+				{
+					tangents = fieldToAccessor["TANGENT"].Value.AsVector3Array();
+				}
+				else {
+					tangents = new Vector3[verts.Length];
+					for (int i = 0; i < verts.Length; i++)
+						tangents[i] = new Vector3();
+				}
+
 				mesh.AddBlendShapeFrame(blendShapeIndex.ToString(), 1.0f, verts, normals, tangents);
 			}
 		}
